@@ -31,17 +31,22 @@ angular.module('conFusion.services', ['ngResource'])
 
         }])
 
-        .factory('corporateFactory', ['$resource', 'baseURL', function($resource,baseURL) {
+        .factory('corporateFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
 
-            return $resource(baseURL+"leadership/:id");
+    return $resource(baseURL + "leadership/:id", null,  {
+                'update': {
+                    method: 'PUT'
+                }
+            });
 
-        }])
+}])
+
 
         .factory('feedbackFactory', ['$resource', 'baseURL', function($resource,baseURL) {
 
 
-            return $resource(baseURL+"feedback/:id");
+            return $resource(baseURL+"feedbackFactory/:id");
 
         }])
 

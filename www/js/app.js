@@ -25,7 +25,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
-    .state('app', {
+  .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/sidebar.html',
@@ -33,31 +33,35 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
   })
 
   .state('app.home', {
-    url: '/home',
-    views: {
-      'mainContent': {
-        templateUrl: 'templates/home.html',
-        controller: 'IndexController'
-      }
-    }
-  })
+     url: '/home',
+     views: {
+       'mainContent': {
+         templateUrl: 'templates/home.html',
+           controller: 'IndexController'
+       }
+     }
+   })
 
   .state('app.aboutus', {
       url: '/aboutus',
       views: {
         'mainContent': {
-          templateUrl: 'templates/aboutus.html'
+          templateUrl: 'templates/aboutus.html',
+          controller: 'AboutController'
         }
       }
     })
-    .state('app.contactus', {
-        url: '/contactus',
-        views: {
-          'mainContent': {
-            templateUrl: 'templates/contactus.html'
-          }
+
+   .state('app.contactus', {
+      url: '/contactus',
+      views: {
+        'mainContent': {
+          templateUrl: 'templates/contactus.html',
+          controller: 'ContactController'
         }
-      })
+      }
+    })
+
     .state('app.menu', {
       url: '/menu',
       views: {
@@ -72,11 +76,13 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
     url: '/menu/:id',
     views: {
       'mainContent': {
-        templateUrl: 'templates/playlist.html',
+        templateUrl: 'templates/dishdetail.html',
         controller: 'DishDetailController'
       }
     }
   });
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/home');
+
 });
