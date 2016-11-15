@@ -77,7 +77,7 @@ $timeout(function() {
 })
 
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate'  function($scope, menuFactory, favoriteFactory, baseURL, ionicListDelegate) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
 
   $scope.baseURL = baseURL;
   $scope.tab = 1;
@@ -119,11 +119,10 @@ $timeout(function() {
   };
 
   $scope.addFavorite = function (index) {
-    console.log("index is " + index);
-
-    favoriteFactory.addToFavorites(index);
-    $ionicListDelegate.closeOptionButtons();
-  }
+        console.log("index is " + index);
+        favoriteFactory.addToFavorites(index);
+        $ionicListDelegate.closeOptionButtons();
+    }
 }])
 
 .controller('ContactController', ['$scope', 'baseURL', function($scope, baseURL) {
@@ -176,7 +175,7 @@ $timeout(function() {
   };
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function($scope, $stateParams, menuFactory, baseURL) {
+.controller('DishDetailController', ['$scope', '$state', '$stateParams', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicModal', '$timeout', function($scope, $state, $stateParams, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal, $timeout) {
 
   $scope.baseURL = baseURL;
   $scope.dish = {};
@@ -205,20 +204,58 @@ $timeout(function() {
     $scope.openPopover = function ($event) {
         $scope.popover.show($event);
     };
+
     $scope.closePopover = function () {
         $scope.popover.hide();
     };
 
-    $scope.$on('$destroy', function () {
-        $scope.popover.remove();
+
+   $scope.addFavorite = function (dishid) {
+       console.log("dishid is " + dishid);
+       favoriteFactory.addToFavorites(parseInt($stateParams.id,10));
+
+       $scope.closePopover();
+      };
+
+      $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.commentForm = modal;
     });
 
-    $scope.addFavorite = function () {
-        console.log("index is " + $stateParams.id);
+    $scope.closeCommentForm = function () {
+        $scope.commentForm.hide();
+    };
 
-        favoriteFactory.save({_id: $stateParams.id});;
+    $scope.showCommentForm = function () {
+        $scope.commentForm.show();
         $scope.popover.hide();
+    };
 
+    $scope.mycomment = {
+      rating: 5,
+      comment: ""
+  };
+
+  $scope.submitComment = function() {
+
+    $scope.mycomment.date = new Date().toISOString();
+    console.log($scope.mycomment);
+
+    $scope.dish.comments.push($scope.mycomment);
+    menuFactory.getDishes().update({
+      id: $scope.dish.id
+    }, $scope.dish);
+
+    $scope.closeCommentForm();
+
+    $scope.closePopover();
+
+    $scope.mycomment = {
+      rating: 5,
+      comment: ""
+    };
+  }
 
 }])
 
@@ -284,30 +321,30 @@ $timeout(function() {
 
 }])
 
-.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
 
-    $scope.baseURL = baseURL;
-    $scope.shouldShowDelete = false;
+  $scope.baseURL = baseURL;
+  $scope.shouldShowDelete = false;
 
-    $ionicLoading.show({
-        template: '<ion-spinner></ion-spinner> Loading...'
-    });
+  $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner> Loading...'
+  });
 
-    $scope.favorites = favoriteFactory.getFavorites();
+  $scope.favorites = favoriteFactory.getFavorites();
 
-    $scope.dishes = menuFactory.getDishes().query(
-        function (response) {
-            $scope.dishes = response;
-            $timeout(function () {
-                $ionicLoading.hide();
-            }, 1000);
-        },
-        function (response) {
-            $scope.message = "Error: " + response.status + " " + response.statusText;
-            $timeout(function () {
-                $ionicLoading.hide();
-            }, 1000);
-        });
+  $scope.dishes = menuFactory.getDishes().query(
+      function (response) {
+          $scope.dishes = response;
+          $timeout(function () {
+              $ionicLoading.hide();
+          }, 1000);
+      },
+      function (response) {
+          $scope.message = "Error: " + response.status + " " + response.statusText;
+          $timeout(function () {
+              $ionicLoading.hide();
+          }, 1000);
+      });
 
 
     console.log($scope.dishes, $scope.favorites);
@@ -315,7 +352,7 @@ $timeout(function() {
     $scope.toggleDelete = function () {
         $scope.shouldShowDelete = !$scope.shouldShowDelete;
         console.log($scope.shouldShowDelete);
-    }
+    };
 
     $scope.deleteFavorite = function (index) {
 
@@ -335,7 +372,7 @@ $timeout(function() {
 
         $scope.shouldShowDelete = false;
 
-    }
+    };
 
 
   }])
