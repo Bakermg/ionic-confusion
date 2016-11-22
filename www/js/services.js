@@ -1,28 +1,29 @@
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
-  .constant("baseURL", "http://localhost:3000/")
-  .factory('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+    .constant("baseURL", "http://localhost:3000/")
+    .factory('menuFactory', ['$resource', 'baseURL', function($resource, baseURL) {
 
-    return $resource($baseURL+ "dishes/:id", null {
-      'update': {
-        method: 'PUT'
-      }
-    });
-  }]);
+        return $resource(baseURL + "dishes/:id", null, {
+            'update': {
+                method: 'PUT'
+            }
+        });
 
-    .factory('promotionFactory', ['$resource', '$baseURL' function($resource, $baseURL){
-      return $resource($baseURL + "promotions/:id");
     }])
+
+.factory('promotionFactory', ['$resource', 'baseURL', function($resource, baseURL) {
+    return $resource(baseURL + "promotions/:id");
+}])
 
 .factory('corporateFactory', ['$resource', 'baseURL', function($resource, baseURL) {
 
 
-  return $resource(baseURL + "leadership/:id", null, {
-    'update': {
-      method: 'PUT'
-    }
-  });
+    return $resource(baseURL + "leadership/:id", null, {
+        'update': {
+            method: 'PUT'
+        }
+    });
 
 }])
 
@@ -30,25 +31,25 @@ angular.module('conFusion.services', ['ngResource'])
 .factory('feedbackFactory', ['$resource', 'baseURL', function($resource, baseURL) {
 
 
-  return $resource(baseURL + "feedbackFactory/:id");
+    return $resource(baseURL + "feedbackFactory/:id");
 
 }])
 
-.factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+.factory('favoriteFactory', ['$resource', 'baseURL', function($resource, baseURL) {
     var favFac = {};
     var favorites = [];
 
-    favFac.addToFavorites = function (index) {
+    favFac.addToFavorites = function(index) {
         for (var i = 0; i < favorites.length; i++) {
             if (favorites[i].id == index)
                 return;
         }
-        favorites.push({id: index});
+        favorites.push({ id: index });
     };
 
 
 
-    favFac.deleteFromFavorites = function (index) {
+    favFac.deleteFromFavorites = function(index) {
         for (var i = 0; i < favorites.length; i++) {
             if (favorites[i].id == index) {
                 favorites.splice(i, 1);
@@ -56,9 +57,27 @@ angular.module('conFusion.services', ['ngResource'])
         }
     }
 
-    favFac.getFavorites = function () {
+    favFac.getFavorites = function() {
         return favorites;
     };
-      return favFac;
-    }])
+    return favFac;
+}])
+
+.factory('$localStorage', ['$window', function($window) {
+  return {
+    store: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    storeObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key,defaultValue) {
+      return JSON.parse($window.localStorage[key] || defaultValue);
+    }
+  }
+}])
+
 ;
