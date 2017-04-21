@@ -1,3 +1,3 @@
 # Ionic app
 ---
-### Confusion web site bult with Ionic framework.
+### Confusion website bult with Angular using the Ionic framework.
